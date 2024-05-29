@@ -129,6 +129,7 @@ const Modal: React.FC<ModalType> = ({ setModalOpen, startDate }) => {
   const [selectEndDay, setSelectEndDay] = useState<Date | null>(null);
   const [showMiniCalendarStart, setShowMiniCalendarStart] = useState(false);
   const [showMiniCalendarEnd, setShowMiniCalendarEnd] = useState(false);
+  const CompareDate = selectStartDay && selectEndDay && selectStartDay > selectEndDay;
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -140,10 +141,12 @@ const Modal: React.FC<ModalType> = ({ setModalOpen, startDate }) => {
 
   const handleStartButtonClick = () => {
     setShowMiniCalendarStart(!showMiniCalendarStart);
+    setShowMiniCalendarEnd(false);
   };
 
   const handleEndButtonClick = () => {
     setShowMiniCalendarEnd(!showMiniCalendarEnd);
+    setShowMiniCalendarStart(false);
   };
 
   useEffect(() => {
@@ -159,7 +162,7 @@ const Modal: React.FC<ModalType> = ({ setModalOpen, startDate }) => {
         <ModalBtn>
           <XBtn onClick={() => setModalOpen(false)}>취소</XBtn>
           <NameBox>일정 추가</NameBox>
-          <CreateBtn>추가</CreateBtn>
+          <CreateBtn disabled={CompareDate ?? undefined}>추가</CreateBtn>
         </ModalBtn>
         <FirstInput placeholder="운동" />
         <SecondInput placeholder="운동 시간 / 횟수" />
@@ -172,7 +175,10 @@ const Modal: React.FC<ModalType> = ({ setModalOpen, startDate }) => {
           </StartDateBtn>
           {showMiniCalendarStart && <MiniCalendarStart onDayClick={setSelectStartDay} />}
           <EndInput placeholder="종료" disabled />
-          <EndInputBtn onClick={handleEndButtonClick}>
+          <EndInputBtn
+            onClick={handleEndButtonClick}
+            style={CompareDate ? { textDecoration: 'line-through', color: 'red' } : {}}
+          >
             {selectEndDay
               ? `${selectEndDay.getFullYear()}. ${selectEndDay.getMonth() + 1}. ${selectEndDay.getDate()}.`
               : Today}
