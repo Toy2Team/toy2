@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import MiniCalendarStart from '../../components/calendarcrud/MiniCalendarStart';
 import MiniCalendarEnd from '../../components/calendarcrud/MiniCalendarEnd';
 import styled from 'styled-components';
+import { start } from 'repl';
 
 const ModalLayout = styled.div`
   position: fixed;
@@ -98,7 +99,7 @@ const EndInput = styled.input`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
 `;
-const EndInputBtn = styled.button`
+const EndDateBtn = styled.button`
   position: absolute;
   top: 64px;
   right: 23px;
@@ -125,7 +126,7 @@ interface ModalType {
 
 const Modal: React.FC<ModalType> = ({ setModalOpen, startDate }) => {
   const Today = startDate.toLocaleDateString();
-  const [selectStartDay, setSelectStartDay] = useState<Date | null>(null);
+  const [selectStartDay, setSelectStartDay] = useState<Date | null>(startDate);
   const [selectEndDay, setSelectEndDay] = useState<Date | null>(null);
   const [showMiniCalendarStart, setShowMiniCalendarStart] = useState(false);
   const [showMiniCalendarEnd, setShowMiniCalendarEnd] = useState(false);
@@ -175,14 +176,14 @@ const Modal: React.FC<ModalType> = ({ setModalOpen, startDate }) => {
           </StartDateBtn>
           {showMiniCalendarStart && <MiniCalendarStart onDayClick={setSelectStartDay} />}
           <EndInput placeholder="종료" disabled />
-          <EndInputBtn
+          <EndDateBtn
             onClick={handleEndButtonClick}
             style={CompareDate ? { textDecoration: 'line-through', color: 'red' } : {}}
           >
             {selectEndDay
               ? `${selectEndDay.getFullYear()}. ${selectEndDay.getMonth() + 1}. ${selectEndDay.getDate()}.`
               : Today}
-          </EndInputBtn>
+          </EndDateBtn>
           {showMiniCalendarEnd && <MiniCalendarEnd onDayClick={setSelectEndDay} />}
         </WhiteBox>
         <MemoInput placeholder="메모" />
