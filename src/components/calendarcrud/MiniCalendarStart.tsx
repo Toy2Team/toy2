@@ -1,17 +1,18 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const MiniLayout = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
 `;
 const MiniCalendarBox = styled.div`
   position: absolute;
+  top: 15px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  width: 295px;
-  margin-top: 7px;
+  width: 305px;
+  margin: 8px 0 0 14px;
   padding: 0 10px 20px 10px;
   background-color: #e0e0e0;
   border: 1px solid #e8e8e8;
@@ -96,7 +97,7 @@ interface MiniCalendarStartType {
   onDayClick: (day: Date) => void;
 }
 
-const MiniCalendarStart: React.FC<MiniCalendarStartType> = ({ onDayClick }) => {
+const MiniCalendarStart = ({ onDayClick }: MiniCalendarStartType) => {
   const [date, setDate] = useState<Date>(new Date());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const firstDayOfMonth: Date = new Date(date.getFullYear(), date.getMonth(), 1);
