@@ -32,8 +32,8 @@ const Modal = ({ setModalOpen, startDate }: ModalType) => {
   const [firstInputValue, setFirstInputValue] = useRecoilState(firstInputState);
   const [secondInputValue, setSecondInputValue] = useRecoilState(secondInputState);
   const [memoInputValue, setMemoInputValue] = useRecoilState(memoInputState);
-  const [startInputValue, setStartInputValue] = useRecoilState(startInputState);
-  const [endInputValue, setEndInputValue] = useRecoilState(endInputState);
+  const [, setStartInputValue] = useRecoilState(startInputState);
+  const [, setEndInputValue] = useRecoilState(endInputState);
 
   const handleStartDay = (date: Date | null) => {
     setSelectStartDay(date);
