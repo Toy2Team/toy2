@@ -1,6 +1,100 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+interface Day {
+  day: number;
+  isCurrentMonth: boolean;
+}
+
+interface MiniCalendarEndType {
+  onDayClick: (day: Date) => void;
+}
+
+const Calendar = ({ onDayClick }: MiniCalendarEndType) => {
+  const [date, setDate] = useState<Date>(new Date());
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const firstDayOfMonth: Date = new Date(date.getFullYear(), date.getMonth(), 1);
+  const lastDayOfMonth: Date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  const daysInMonth: Day[] = [];
+
+  for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+    daysInMonth.push({ day: i, isCurrentMonth: true });
+  }
+
+  const Week: string[] = ['일', '월', '화', '수', '목', '금', '토'];
+
+  const BeforeMonthDate: Day[] = Array.from({ length: firstDayOfMonth.getDay() }, (_, i) => ({
+    day: lastDayOfMonth.getDate() - i,
+    isCurrentMonth: false,
+  })).reverse();
+
+  const AfterMonthDate = Array.from({ length: 6 - lastDayOfMonth.getDay() }, (_, i) => ({
+    day: i + 1,
+    isCurrentMonth: false,
+  }));
+
+  useEffect(() => {
+    const daysInMonth = [];
+    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+      daysInMonth.push({ day: i, isCurrentMonth: true });
+    }
+  }, [date]);
+
+  const handleDayClick = (day: number) => {
+    setSelectedDay(day);
+    const selectedDate = new Date(date.getFullYear(), date.getMonth(), day);
+    onDayClick(selectedDate);
+  };
+
+  const handlePrevMonth = (): void => {
+    setDate(new Date(date.getFullYear(), date.getMonth() - 1));
+  };
+  const handleNextMonth = (): void => {
+    setDate(new Date(date.getFullYear(), date.getMonth() + 1));
+  };
+
+  const months: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+  return (
+    <MiniLayout>
+      <MiniCalendarBox>
+        <MiniSwiperBox>
+          <MiniLeftSwiperBtn onClick={handlePrevMonth}>{'<'}</MiniLeftSwiperBtn>
+          <MiniRightSwiperBtn onClick={handleNextMonth}>{'>'}</MiniRightSwiperBtn>
+        </MiniSwiperBox>
+        <MiniMonthYearBox>{`${date.getFullYear()}. ${months[date.getMonth()]}`}</MiniMonthYearBox>
+        <MiniRightBox></MiniRightBox>
+
+        {Week.map((day, index) => (
+          <MiniWeekBox key={index}>{day}</MiniWeekBox>
+        ))}
+        {BeforeMonthDate.map((dayObj, index) => {
+          const MiniDay = dayObj.isCurrentMonth ? CurrentMonthDay : OtherMonthDay;
+          return <MiniDay key={`start-${index}`}>{dayObj.day}</MiniDay>;
+        })}
+        {daysInMonth.map((dayObj, index) => {
+          const MiniDay = dayObj.isCurrentMonth ? CurrentMonthDay : OtherMonthDay;
+          return (
+            <MiniDay
+              onClick={() => handleDayClick(dayObj.day)}
+              style={{ backgroundColor: dayObj.day === selectedDay ? '#F3E5AB' : '#FFF' }}
+              key={index}
+            >
+              {dayObj.day}
+            </MiniDay>
+          );
+        })}
+        {AfterMonthDate.map((dayObj, index) => {
+          const MiniDay = dayObj.isCurrentMonth ? CurrentMonthDay : OtherMonthDay;
+          return <MiniDay key={`end-${index}`}>{dayObj.day}</MiniDay>;
+        })}
+      </MiniCalendarBox>
+    </MiniLayout>
+  );
+};
+
+export default Calendar;
+
 const MiniLayout = styled.div`
   position: relative;
   display: flex;
@@ -8,12 +102,11 @@ const MiniLayout = styled.div`
 `;
 const MiniCalendarBox = styled.div`
   position: absolute;
-  top: 15px;
   right: 22px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 305px;
-  margin-top: 7px;
+  margin: 3px 0 0 15px;
   padding: 0 10px 20px 10px;
   background-color: #e0e0e0;
   border-radius: 10px;
@@ -86,110 +179,3 @@ const OtherMonthDay = styled(MiniDay)`
   color: gray;
   background-color: #d3d3d3;
 `;
-
-interface Day {
-  day: number;
-  isCurrentMonth: boolean;
-}
-
-interface MiniCalendarEndType {
-  onDayClick: (day: Date) => void;
-}
-
-const Calendar = ({ onDayClick }: MiniCalendarEndType) => {
-  const [date, setDate] = useState<Date>(new Date());
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const firstDayOfMonth: Date = new Date(date.getFullYear(), date.getMonth(), 1);
-  const lastDayOfMonth: Date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  const daysInMonth: Day[] = [];
-
-  for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-    daysInMonth.push({ day: i, isCurrentMonth: true });
-  }
-
-  const Week: string[] = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
-  const BeforeMonthDate: Day[] = Array.from({ length: firstDayOfMonth.getDay() }, (_, i) => ({
-    day: lastDayOfMonth.getDate() - i,
-    isCurrentMonth: false,
-  })).reverse();
-
-  const AfterMonthDate = Array.from({ length: 6 - lastDayOfMonth.getDay() }, (_, i) => ({
-    day: i + 1,
-    isCurrentMonth: false,
-  }));
-
-  useEffect(() => {
-    const daysInMonth = [];
-    for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-      daysInMonth.push({ day: i, isCurrentMonth: true });
-    }
-  }, [date]);
-
-  const handleDayClick = (day: number) => {
-    setSelectedDay(day);
-    const selectedDate = new Date(date.getFullYear(), date.getMonth(), day);
-    onDayClick(selectedDate);
-  };
-
-  const handlePrevMonth = (): void => {
-    setDate(new Date(date.getFullYear(), date.getMonth() - 1));
-  };
-  const handleNextMonth = (): void => {
-    setDate(new Date(date.getFullYear(), date.getMonth() + 1));
-  };
-
-  const months: string[] = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  return (
-    <MiniLayout>
-      <MiniCalendarBox>
-        <MiniSwiperBox>
-          <MiniLeftSwiperBtn onClick={handlePrevMonth}>{'<'}</MiniLeftSwiperBtn>
-          <MiniRightSwiperBtn onClick={handleNextMonth}>{'>'}</MiniRightSwiperBtn>
-        </MiniSwiperBox>
-        <MiniMonthYearBox>{`${months[date.getMonth()]}, ${date.getFullYear()}`}</MiniMonthYearBox>
-        <MiniRightBox></MiniRightBox>
-
-        {Week.map((day, index) => (
-          <MiniWeekBox key={index}>{day}</MiniWeekBox>
-        ))}
-        {BeforeMonthDate.map((dayObj, index) => {
-          const MiniDay = dayObj.isCurrentMonth ? CurrentMonthDay : OtherMonthDay;
-          return <MiniDay key={`start-${index}`}>{dayObj.day}</MiniDay>;
-        })}
-        {daysInMonth.map((dayObj, index) => {
-          const MiniDay = dayObj.isCurrentMonth ? CurrentMonthDay : OtherMonthDay;
-          return (
-            <MiniDay
-              onClick={() => handleDayClick(dayObj.day)}
-              style={{ backgroundColor: dayObj.day === selectedDay ? '#F3E5AB' : '#FFF' }}
-              key={index}
-            >
-              {dayObj.day}
-            </MiniDay>
-          );
-        })}
-        {AfterMonthDate.map((dayObj, index) => {
-          const MiniDay = dayObj.isCurrentMonth ? CurrentMonthDay : OtherMonthDay;
-          return <MiniDay key={`end-${index}`}>{dayObj.day}</MiniDay>;
-        })}
-      </MiniCalendarBox>
-    </MiniLayout>
-  );
-};
-
-export default Calendar;
