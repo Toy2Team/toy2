@@ -1,7 +1,7 @@
 # 💪 헬스 캘린더
 
 <div>
-  <a href="https://health-silk.vercel.app/" target="_blank">
+  <a href="https://health-two-silk.vercel.app/" target="_blank">
     <img src="https://img.shields.io/badge/배포  URL 바로가기-4CD964?style=for-the-badge&logoColor=white" alt="배포 URL 바로가기"/>
   </a>
 </div>
