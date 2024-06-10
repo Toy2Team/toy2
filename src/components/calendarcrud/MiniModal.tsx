@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import iconClose from '@/assets/images/icon-close.svg';
+import iconClose from '@/assets/images/icon-close.png';
 
 interface Event {
   id: string;
